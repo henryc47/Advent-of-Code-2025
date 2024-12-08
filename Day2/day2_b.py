@@ -12,6 +12,8 @@ def calculation(filename):
 
 def is_report_safe(report):
     is_safe = True
+    removed_level = False
+    num_removed = 0
     num_levels = len(report)
     if num_levels<=1: #only one report (or none!) always safe
         return is_safe
@@ -21,6 +23,10 @@ def is_report_safe(report):
         new_level = report[i]
         if new_level>last_level:
             if direction==-1:
+                if removed_level==False:
+                    num_removed += 1 #debug
+                    removed_level = True
+                    continue
                 is_safe = False
                 break
             direction = 1
@@ -28,17 +34,33 @@ def is_report_safe(report):
 
         elif new_level<last_level:
             if direction==1:
+                if removed_level==False:
+                    num_removed += 1 #debug
+                    removed_level = True
+                    continue
                 is_safe = False
                 break
             direction = -1
             difference = last_level-new_level
         else: #new_level==old_level, is unsafe
+            if removed_level==False:
+                num_removed += 1 #debug
+                removed_level = True
+                continue
             is_safe = False
             break
         if difference<1 or difference>3:
+            if removed_level==False:
+                num_removed += 1 #debug
+                removed_level = True
+                continue
             is_safe = False
             break
         last_level = new_level
+    print("report = ",report)
+    print("levels removed = ",num_removed)
+    print('safe = ',is_safe)
+    print()
     return is_safe
 
 
